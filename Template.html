@@ -1,0 +1,20 @@
+<form action="" method="post" name="frmUser">
+    <div class="message text-center"><?php if($message!="") { echo $message; } ?></div>
+
+    <h1 class="text-center">Login</h1>
+
+    <div>
+        <div class="row">
+            <label> Username </label> <input class="full-width" name="userName"
+                                             required type="text">
+        </div>
+        <div class="row">
+            <label>Password</label> <input class="full-width"
+                                           name="password" required type="password">
+        </div>
+        <div class="row">
+            <input class="full-width " name="submit" type="submit"
+                   value="Submit">
+        </div>
+    </div>
+</form>
