@@ -15,7 +15,7 @@ $sql = "CREATE TABLE images (
 $result = mysqli_query($conn, $sql);
 
 foreach ($dir as $fileinfo) {
-    if (!$fileinfo->isDot() && $fileinfo != "return.png") {
+    if (!$fileinfo->isDot() && $fileinfo != "null-card.png") {
         $sql = "INSERT INTO images (name_ref, img_src) VALUES ('" . strtok($fileinfo, ".") . "', '" . $fileinfo . "')";
         $result = mysqli_query($conn, $sql);
 
@@ -27,7 +27,7 @@ foreach ($dir as $fileinfo) {
     }
 }
 
-$sql = "INSERT INTO images (name_ref, img_src) VALUES ('null-card', 'return.png')";
+$sql = "INSERT INTO images (name_ref, img_src) VALUES ('null-card', 'null-card.png')";
 $result = mysqli_query($conn, $sql);
 if ($result) {
     $_SESSION['returnCode'] = "Table Successfully Created";
