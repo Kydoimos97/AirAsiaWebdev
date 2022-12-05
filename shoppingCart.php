@@ -47,6 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
     logOut();
 }
 
+
 function checkout(): void
 {
     unset($_GET);
@@ -55,8 +56,20 @@ function checkout(): void
         if ($users['points'] >= $_SESSION['total']) {
             // Update redemption table
             $conn = mysqli_connect("localhost", "root", "", "airasiadb");
-            $id_array = mysqli_query($conn, "SELECT cardid, quantity FROM `cart` WHERE userId = '" . $users['userId'] . "'");
-            $result = mysqli_query($conn, "INSERT INTO redemption(timestamp, pointsRedeemed, accountId, cardId) VALUES ('" . time() . "', '" . $_SESSION['total'] . "',  '" . $users['userId'] . "' ,'" . print_r($id_array) . "' ");
+            $id_array = mysqli_fetch_all(mysqli_query($conn, "SELECT cardid, quantity FROM `cart` WHERE userId = '" . $users['userId'] . "'"));
+            $idList = "";
+            foreach ($id_array as $item) {
+                $idList = $idList . $item[0] . ",";
+            }
+
+            $quantityList = "";
+            foreach ($id_array as $item) {
+                $quantityList = $quantityList . $item[1] . ",";
+            }
+
+            $conn = mysqli_connect("localhost", "root", "", "airasiadb");
+            $result = mysqli_query($conn, "INSERT INTO redemption(`timestamp`, pointsRedeemed, accountId, cardId, quantity) VALUES ('" . time() . "', '" . $_SESSION['total'] . "',  '" . $users['userId'] . "' ,'" . $idList . "', '" . $quantityList . "')");
+            $_SESSION['result'] = $result;
 
             // Update User and Cart Tables
             $conn = mysqli_connect("localhost", "root", "", "airasiadb");
