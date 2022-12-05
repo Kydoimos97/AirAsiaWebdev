@@ -40,7 +40,8 @@ CREATE TABLE `users`
 --
 
 INSERT INTO `users`
-VALUES (1, 'admin', '$2a$10$0FHEQ5/cplO3eEKillHvh.y009Wsf4WCKvQHsZntLamTUToIBe.fG', 'I am the admin', 'Admin',
+VALUES (1, 'admin', '$2a$10$0FHEQ5/cplO3eEKillHvh.y009Wsf4WCKvQHsZntLamTUToIBe.fG', 'I am the admin'
+, 'Admin',
         '100w 100s', 'Salt Lake City', 'UT', '84102', 99999, 'admin');
 
 INSERT INTO `users`
@@ -82,5 +83,5 @@ ALTER TABLE `users`
 --
 ALTER TABLE `users`
     MODIFY `userId` int(8) NOT NULL AUTO_INCREMENT,
-    AUTO_INCREMENT = 2;
+    AUTO_INCREMENT = 1;
 

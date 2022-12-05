@@ -34,7 +34,7 @@ ALTER TABLE `cards`
 --
 ALTER TABLE `cards`
     MODIFY `id` int(8) NOT NULL AUTO_INCREMENT,
-    AUTO_INCREMENT = 2;
+    AUTO_INCREMENT = 1;
 
 --
 -- Dumping data for table `cards`
