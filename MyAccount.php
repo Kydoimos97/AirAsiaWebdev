@@ -11,6 +11,7 @@ $userData = mysqli_fetch_array($result);
 if (!isset($_SESSION['AuthSession']) | !isset($_SESSION['userName'])) {
     header("Location:Login.php");
 }
+
 // Connect to the database and get the userdata
 if (isset($_POST['updateUser']) | array_key_exists('updateUser', $_POST)) {
     $conn = mysqli_connect("localhost", "root", "", "airasiadb");
@@ -92,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
                 </div>
             </li>';
             } ?>
-            <?php if (isset($_SESSION['userRole']) && strtolower($_SESSION['userRole']) == "admin") {
+            <?php if (isset($_SESSION['userRole']) && $_SESSION['userRole'] == "admin") {
                 echo '           
             <li>
                 <div class="text-center pt-3 mb-2 mt-3 pb-0 w-75 center-block">
@@ -320,7 +321,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
                                     ">
                                     <div class="col-2"></div>
                                     <div class="col-8 border-top my-auto pt-2" style="text-align: center">
-                                        <p><?php if (isset($_SESSION['message']) && !empty($_SESSION['message'])) echo $_SESSION["message"] ?></p>
+                                        <p><?php if (isset($_SESSION['messageAccount']) && !empty($_SESSION['messageAccount'])) echo $_SESSION["message"] ?></p>
                                     </div>
                                     <div class="col-2"></div>
                             </div>
@@ -335,7 +336,20 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
                                 </div>
                                 <div class="col-2"></div>
                             </div>
+                            <div class="row">
+                                <div class="col-9"></div>
+                                <div class="col-3">
+                                    <div class="text-center mx-auto pt-3 mb-2 pb-5 w-50">
+                                        <form action="" method="post">
+                                            <button class="btn btn-primary btn-block default-button-muted"
+                                                    type="submit" name = "clearCookie" id = "clearCookie"
+                                                    value = "Run">Log Out</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                             </form>
+
                         </div>
                     </div>
                 </div>
@@ -344,6 +358,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
     </section>
 </div>
 </div>
+
 
 
 <!-- jQuery CDN - Slim version (=without AJAX) -->

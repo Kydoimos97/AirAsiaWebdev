@@ -2,7 +2,7 @@
 
 function updateUser(): void
 {
-    $_SESSION['message'] = "";
+    $_SESSION['messageCreate'] = "";
     $incompleteFlag = false;
     foreach ($_POST as $key => $value) {
         if (empty($value)) {
@@ -30,11 +30,11 @@ function updateUser(): void
 
 function createUser(): void
 {
-    $_SESSION['message'] = "";
+    $_SESSION['messageCreate'] = "";
     // Connect to DB
     $conn = mysqli_connect("localhost", "root", "", "airasiadb");
     if ($conn->connect_error) {
-        $_SESSION['message'] = "An error Occurred while creating user";
+        $_SESSION['messageCreate'] = "An error Occurred while creating user";
         die("Connection failed: " . $conn->connect_error);
     }
 
@@ -54,21 +54,20 @@ function createUser(): void
 
     // Update user
     if ($emailFlag) {
+        $conn = mysqli_connect("localhost", "root", "", "airasiadb");
         $result = mysqli_query($conn, "SELECT * FROM `users` WHERE userName = '" . $userName . "'");
-        if ($result->num_rows > 0) {
+        if ($result->num_rows == 0) {
             $passWord = password_hash($_POST['password'], PASSWORD_DEFAULT);
             $displayName = ucfirst(strtok($userName, '@'));
-            $result = mysqli_query($conn, "INSERT INTO users (userName, password, displayName, security, adress, city, state, zip, points, role) VALUES ('" . $userName . "', '" . $passWord . "', '" . $displayName . "', '" . $_POST['securityPhrase'] . "', '" . $_POST['adressLine'] . "' , '" . $_POST['cityInp'] . "', '" . $_POST['state'] . "', '" . $_POST['zip'] . "',  0, 'user')");
+            $result = mysqli_query($conn, "INSERT INTO users (userName, `password`, displayName, `security`, adress, city, state, zip, points, `role`) VALUES ('" . $userName . "', '" . $passWord . "', '" . $displayName . "', '" . $_POST['securityPhrase'] . "', '" . $_POST['adressLine'] . "' , '" . $_POST['cityInp'] . "', '" . $_POST['state'] . "', '" . $_POST['zip'] . "',  0, 'user')");
             if ($result) {
-                $_SESSION['message'] = "User Successfully Created, redirecting in 2 seconds";
+                $_SESSION['messageCreate'] = "User Successfully Created, redirecting in 2 seconds";
                 header("refresh:2;url=Login.php");
             } else {
-                $_SESSION['message'] = "An error Occurred while creating user";
+                $_SESSION['messageCreate'] = "An error Occurred while creating user";
             }
         } else {
-            $_SESSION['message'] = "Account already exists with the given email";
+            $_SESSION['messageCreate'] = "Account already exists with the given email";
         }
-    } else {
-        $_SESSION['message'] = "User creation failed try again";
     }
 }

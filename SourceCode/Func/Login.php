@@ -17,16 +17,16 @@ function logIn(): void
             }
         }
         if ($isSuccess == 0 && $userName != "") {
-            $_SESSION['message'] = "Invalid Username or Password";
+            $_SESSION['messageLogin'] = "Invalid Username or Password";
         } else {
             $result = mysqli_query($conn, "SELECT * FROM `users` WHERE userName = '" . $userName . "'");
             $userArray = mysqli_fetch_array($result);
             $_SESSION['AuthSession'] = true;
             $_SESSION['displayName'] = $userArray['displayName'];
             $_SESSION['userRole'] = $userArray['role'];
-            $_SESSION['message'] = "Login Successful Redirecting";
+            $_SESSION['messageLogin'] = "Login Successful Redirecting";
             $_SESSION['userName'] = $userName;
-            header("refresh:2;url=MyAccount.php");
+            header("refresh:1;url=MyAccount.php");
 
         }
     }
