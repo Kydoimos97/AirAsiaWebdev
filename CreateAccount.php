@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
                 </div>
             </li>';
             } ?>
-            <?php if (isset($_SESSION['userRole']) && strtolower($_SESSION['userRole']) == "admin") {
+            <?php if (isset($_SESSION['userRole']) && $_SESSION['userRole'] == "admin") {
                 echo '           
             <li>
                 <div class="text-center pt-3 mb-2 mt-3 pb-0 w-75 center-block">
@@ -174,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
                                         <div class="phppot-container tile-container">
                                             <form name="frmUser" method="post" action="">
                                                 <br>
-                                                <div class="message text-center"><?php echo $_SESSION['message'] ?></div>
+                                                <div class="message text-center"><?php echo $_SESSION['messageCreate'] ?></div>
                                                 <div class="form-outline mb-4">
                                                     <label class="form-label" for="username">Username:</label>
                                                     <input id="username" class="form-control" name="userName"
