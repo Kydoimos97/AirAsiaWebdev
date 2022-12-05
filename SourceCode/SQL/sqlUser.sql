@@ -12,6 +12,7 @@ USE airasiadb;
 GRANT ALL ON airasiadb.* TO 'root'
     IDENTIFIED BY 'root';
 
+
 SET FOREIGN_KEY_CHECKS = 0; -- to disable them
 
 DROP TABLE IF EXISTS users;
@@ -40,22 +41,30 @@ CREATE TABLE `users`
 
 INSERT INTO `users`
 VALUES (1, 'admin', '$2a$10$0FHEQ5/cplO3eEKillHvh.y009Wsf4WCKvQHsZntLamTUToIBe.fG', 'I am the admin', 'Admin',
-        '100w 100s', 'Salt Lake City', 'UT', '84102', 1000, 'admin');
+        '100w 100s', 'Salt Lake City', 'UT', '84102', 99999, 'admin');
 
 INSERT INTO `users`
 VALUES (2, 'msis@utah.edu', '$2y$10$IASw3hGOm.nbnT8Fk.7vxu571A4Z6wQfltx5lhfdYwV6bzVqG32IO', 'testPhrase', 'Msis',
+        '500w 500s', 'Salt Lake City', 'UT', '84111', 5663, 'user');
+
+INSERT INTO `users`
+VALUES (3, 'bsmith', '$2y$10$DzuIIZXGpMCHRI0ug3276.0VKSPMQQa31PSekMtO29NiQkMjspXE6', 'I am an admin too!', 'Bert Smith',
+        '100S 100E', 'Salt Lake City', 'UT', '84132', 99999, 'user');
+
+INSERT INTO `users`
+VALUES (4, 'pjones', '$2y$10$ZPtzp80YjG5U5Op0DuCRsOkvHEI./UxaKZAH683cmIhRkvHhLdSju', 'I am a test user', 'Peter Jones',
+        '100S 100E', 'Salt Lake City', 'UT', '84112', 23432, 'user');
+
+INSERT INTO `users`
+VALUES (5, 'msba@utah.edu', '$2y$10$IASw3hGOm.nbnT8Fk.7vxu571A4Z6wQfltx5lhfdYwV6bzVqG32IO', 'testPhrase', 'Msba',
         '500w 500s', 'Salt Lake City', 'UT', '84111', 0, 'user');
 
 INSERT INTO `users`
-VALUES (3, 'msba@utah.edu', '$2y$10$IASw3hGOm.nbnT8Fk.7vxu571A4Z6wQfltx5lhfdYwV6bzVqG32IO', 'testPhrase', 'Msba',
+VALUES (6, 'msf@utah.edu', '$2y$10$IASw3hGOm.nbnT8Fk.7vxu571A4Z6wQfltx5lhfdYwV6bzVqG32IO', 'testPhrase', 'Msf',
         '500w 500s', 'Salt Lake City', 'UT', '84111', 0, 'user');
 
 INSERT INTO `users`
-VALUES (4, 'msf@utah.edu', '$2y$10$IASw3hGOm.nbnT8Fk.7vxu571A4Z6wQfltx5lhfdYwV6bzVqG32IO', 'testPhrase', 'Msf',
-        '500w 500s', 'Salt Lake City', 'UT', '84111', 0, 'user');
-
-INSERT INTO `users`
-VALUES (5, 'mre@utah.edu', '$2y$10$IASw3hGOm.nbnT8Fk.7vxu571A4Z6wQfltx5lhfdYwV6bzVqG32IO', 'testPhrase', 'MRE',
+VALUES (7, 'mre@utah.edu', '$2y$10$IASw3hGOm.nbnT8Fk.7vxu571A4Z6wQfltx5lhfdYwV6bzVqG32IO', 'testPhrase', 'MRE',
         '500w 500s', 'Salt Lake City', 'UT', '84111', 0, 'user');
 
 --
