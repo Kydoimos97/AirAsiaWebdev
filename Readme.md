@@ -1,8 +1,7 @@
 <div align="center">
-# InvokeAI: A Stable Diffusion Toolkit
 _Created for IS6465 at the University of Utah
 
-[project logo](CSS/Images/AAlogo.png)
+[project logo](CSS/Images/AAlogoNavBar.png)
 
 </div>
 
