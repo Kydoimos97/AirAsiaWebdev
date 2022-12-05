@@ -1,11 +1,8 @@
 <?php
 session_start();
-include("SourceCode/Func/inlineEcho.php");
 
-if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
-    require_once("SourceCode/Func/logOut.php");
-    logOut();
-}
+require_once("SourceCode/Func/Auth.php");
+AuthorizationAdmin();
 
 function display_data($array): string
 {
@@ -48,7 +45,7 @@ function display_data($array): string
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title>DEBUG TITLE</title>
+    <title>Admin Center</title>
 
     <!-- Bootstrap-->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -94,7 +91,7 @@ function display_data($array): string
                     </div>
                 </li>';
             } ?>
-            <?php if (isset($_SESSION['userRole']) && strtolower($_SESSION['userRole']) == "admin") {
+            <?php if (isset($_SESSION['userRole']) && $_SESSION['userRole'] == "admin") {
                 echo '           
                     <li>
                         <div class="text-center pt-3 mb-2 mt-3 pb-0 w-75 center-block">
@@ -186,7 +183,7 @@ function display_data($array): string
                     <div class="card w-100 border-0 center-block background-default"
                          style="border-color: var(--blendborder)">
                         <p class="text-center pt-3 pb-3"
-                           style="color: var(--grey)"><?php if (inlineEcho("message", "session", "", "", "bool")) {
+                           style="color: var(--grey)"><?php require("SourceCode/Func/inlineEcho.php"); if (inlineEcho("message", "session", "", "", "bool")) {
                                 echo inlineEcho("message", "session");
                             } else {
                                 echo "---Return Code---";
