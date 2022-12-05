@@ -8,9 +8,8 @@ $sql = "SELECT * FROM users where userName = '" . $_SESSION['userName'] . "'";
 $result = mysqli_query($conn, $sql);
 $userData = mysqli_fetch_array($result);
 
-if (!isset($_SESSION['AuthSession']) | !isset($_SESSION['userName'])) {
-    header("Location:Login.php");
-}
+require_once("SourceCode/Func/Auth.php");
+AuthtoLogin();
 
 // Connect to the database and get the userdata
 if (isset($_POST['updateUser']) | array_key_exists('updateUser', $_POST)) {
