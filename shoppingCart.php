@@ -1,17 +1,28 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['userName'])) {
-    header("Location: Login.php");
+require_once("SourceCode/Func/Auth.php");
+AuthtoLogin();
+
+$url =  "//{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+if (str_contains($url, "?")){
+    header("Location: shoppingCart.php");
 }
+
+unset($_POST);
 $counter = 0;
 $conn = mysqli_connect("localhost", "root", "", "airasiadb");
-$result = mysqli_query($conn, "SELECT userid FROM `users` where userName = '" . $_SESSION['userName'] . "'");
+$result = mysqli_query($conn, "SELECT * FROM `users` where userName = '" . $_SESSION['userName'] . "'");
 $users = mysqli_fetch_array($result);
 
-$userId = $users['userid'];
-$sql = "SELECT * FROM `cart` WHERE userid = '" . $users['userid'] . "'";
+$userId = $users['userId'];
+$sql = "SELECT * FROM `cart` WHERE userid = '" . $users['userId'] . "'";
 $cart_items = mysqli_query($conn, $sql);
+
+if ($cart_items->num_rows == 0){
+    $_SESSION['total'] = 0;
+}
+
 
 if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
     func();
@@ -19,18 +30,51 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
 
 if (isset($_GET['updateCart']) | array_key_exists('updateCart', $_GET)) {
     updateCart();
-
+    unset($_GET['updateCart']);
+    $_SESSION['messageCheckout'] = "";
 } else {
     global $id_array;
     $id_array = array();
 }
 
 
+if (isset($_GET['checkOut']) | array_key_exists('checkOut', $_GET)) {
+    checkout();
+}
+
 if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
     require_once("SourceCode/Func/logOut.php");
     logOut();
 }
 
+function checkout(): void
+{
+    unset($_GET);
+    global $users;
+    if (isset($_SESSION['total']) > 0) {
+        if ($users['points'] >= $_SESSION['total']) {
+            // Update redemption table
+            $conn = mysqli_connect("localhost", "root", "", "airasiadb");
+            $id_array = mysqli_query($conn, "SELECT cardid, quantity FROM `cart` WHERE userId = '" . $users['userId'] . "'");
+            $result = mysqli_query($conn, "INSERT INTO redemption(timestamp, pointsRedeemed, accountId, cardId) VALUES ('" . time() . "', '" . $_SESSION['total'] . "',  '" . $users['userId'] . "' ,'" . print_r($id_array) . "' ");
+
+            // Update User and Cart Tables
+            $conn = mysqli_connect("localhost", "root", "", "airasiadb");
+            $result = mysqli_query($conn, "DELETE FROM `cart` WHERE userId = '" . $users['userId'] . "'");
+
+            $newBalance = $users['points'] - $_SESSION['total'];
+            $conn = mysqli_connect("localhost", "root", "", "airasiadb");
+            $result = mysqli_query($conn, "UPDATE `users` SET `points` = '" . $newBalance . "' WHERE userId = '" . $users['userId'] . "'");
+            $_SESSION['messageCheckout'] = "Check out Successful";
+            $_SESSION['total'] = 0;
+        } else {
+            $_SESSION['messageCheckout'] = "Balance too low to cover transaction.";
+
+        }
+    } else {
+        $_SESSION['messageCheckout'] = "";
+    }
+}
 
 function updateCart(): void
 {
@@ -52,7 +96,7 @@ function updateCart(): void
 
     }
 
-    header("Location: ProductCart.php");
+    header("Location: shoppingCart.php");
 }
 
 ?>
@@ -76,10 +120,13 @@ function updateCart(): void
     <!-- Fonts -->
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js"></script>
+
 </head>
 
 <body>
+
 <div class="wrapper">
+
     <!-- Sidebar  -->
     <nav id="sidebar">
         <div class="sidebar-header">
@@ -111,7 +158,7 @@ function updateCart(): void
                 </div>
             </li>';
             } ?>
-            <?php if (isset($_SESSION['userRole']) && strtolower($_SESSION['userRole']) == "admin") {
+            <?php if (isset($_SESSION['userRole']) && $_SESSION['userRole'] == "admin") {
                 echo '           
             <li>
                 <div class="text-center pt-3 mb-2 mt-3 pb-0 w-75 center-block">
@@ -189,15 +236,17 @@ function updateCart(): void
                     <div class="card bg-light mb-3 mt-5" style="min-width: 10rem;">
                         <div class="page-title text-center mx-auto pt-2">Cart</div>
                         <div class="card-body">
-                            <form class=w-100 style="display: inline-block" method="get" action="">
+                            <form class=w-100 style="display: inline-block" method="get"">
                                 <?php
                                 $total = 0;
                                 while ($cart = mysqli_fetch_array(
                                     $cart_items, MYSQLI_ASSOC)):
-                                    global $id_array;
-                                    $id_array[] = $cart['cardid'];
-                                    ?>
-                                    <?php
+
+                                global $id_array;
+                                $id_array[] = $cart['cardid'];
+                                ?>
+
+                                <?php
                                     if ($cart['quantity'] == 0) {
                                         continue;
                                     }
@@ -206,16 +255,18 @@ function updateCart(): void
                                     $cardName = $cardData['name'];
                                     if ($cardName == "" | $cardName == null) {
                                         $cardName = "Generic Card";
-                                        $cardImage = "return.png";
+                                        $cardImage = "null-card.png";
                                     } else {
                                         $cardImage = mysqli_fetch_array(mysqli_query($conn, "SELECT img_src FROM `images` where name_ref = '" . $cardName . "'"));
                                         if (empty($cardImage)) {
-                                            $cardImage = "return.png";
+                                            $cardImage = "null-card.png";
                                         } else {
                                             $cardImage = $cardImage['img_src'];
                                         }
                                     }
                                     $total = $total + $cardData['cost'] * $cart['quantity'];
+                                    $_SESSION['total'] = $total
+
                                     ?>
                                     <div class="row ">
                                         <div class="col-2 m-auto" style="display: block">
@@ -258,32 +309,39 @@ function updateCart(): void
                                 /** @noinspection PhpUndefinedVariableInspection */
                                 $_SESSION['idArray'] = $id_array;
                                 ?>
+
                                 <div class="row border-top">
                                     <div class="col pt-3">
                                         <p class="card-title font-weight-bold"
-                                           style="text-align: end; font-size: 16px"><?php echo "Total: " . $total ?></p>
+                                           style="text-align: center; font-size: 16px; color: var(--red) "><?php echo "Point Balance: " . $users['points'] ?></p>
+                                    </div>
+                                    <div class="col pt-3">
+                                        <p class="card-title font-weight-bold"
+                                           style="text-align: center; font-size: 16px"><?php echo "Total: " . $total ?></p>
                                     </div>
                                     <div class="col-1"></div>
                                 </div>
                                 <div class="row pt-3">
-                                    <div class="col-1"></div>
-                                    <div class="col-5">
+                                    <div class = "col-1"></div>
+                                    <div class="col-5" style="align-content: center; text-align: center">
                                         <button class="btn btn-primary btn-block default-button-muted justify-content-end w-50"
                                                 style="padding: 3%; border-radius: 15px"
                                                 type="submit" name="updateCart" id="updateCart" value="Submit">Update
                                             Cart
                                         </button>
                                     </div>
-
-                                    <div class="col-5">
-                                        <a href="UnderConstruction.html">
+                                    <div class="col-5" style="align-content: center; text-align: center">
                                             <button class="btn btn-primary btn-block default-button-main justify-content-end w-75"
                                                     style="padding: 3%"
-                                                    type="button" name="checkOut">Checkout
+                                                    type="submit" name="checkOut" id="checkOut" value="Submit">Checkout
                                             </button>
-                                        </a>
                                     </div>
-                                    <div class="col-1"></div>
+                                </div>
+                                <div class="row pt-3" style="text-align: center">
+                                    <div class="col text-center" style="text-align: center">
+                                    <p class="card-title font-weight-bold"
+                                       style="font-size: 16px"><?php if (isset($_SESSION['messageCheckout'])) {echo $_SESSION['messageCheckout'];} ?></p>
+                                    </div>
                             </form>
                         </div>
                     </div>
@@ -319,8 +377,8 @@ function updateCart(): void
         // $("#sidebarCollapse").trigger('click')
     });
 
-
 </script>
+
 </body>
 
 </html>
