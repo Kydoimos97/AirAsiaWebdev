@@ -2,6 +2,8 @@
 session_start();
 $_SESSION["returnCode"] = "";
 
+require_once("SourceCode/Func/Auth.php");
+AuthorizationAdmin();
 
 if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['mainFunc'])) {
     if (isset($_POST["cardValue"]) && isset($_POST["cardType"]) && isset($_POST["cardCost"])) {
@@ -22,7 +24,7 @@ function newCard(): void
         }
 
         /** @noinspection PhpIfWithCommonPartsInspection */
-        if ($_POST['cardName'] == "" | !isset($_POST['cardName'])) {
+        if ($_POST['cardName'] == "" || !isset($_POST['cardName'])) {
             global $cardName;
             $cardName = null;
         } else {
@@ -31,7 +33,7 @@ function newCard(): void
         }
 
         /** @noinspection PhpIfWithCommonPartsInspection */
-        if ($_POST['cardWebsite'] == "" | !isset($_POST['cardWebsite'])) {
+        if ($_POST['cardWebsite'] == "" || !isset($_POST['cardWebsite'])) {
             global $cardWebsite;
             $cardWebsite = null;
         } else {
@@ -43,7 +45,7 @@ function newCard(): void
 
         if ($result) {
             $_SESSION['returnCode'] = "Card Successfully Added Redirecting in 5 Seconds";
-            header("refresh:5;url=Brandstore.php");
+            header("refresh:5;url=Card-List.php");
         } else {
             $_SESSION['returnCode'] = "An error Occurred while adding giftcard";
         }
@@ -111,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
                 </div>
             </li>';
             } ?>
-            <?php if (isset($_SESSION['userRole']) && strtolower($_SESSION['userRole']) == "admin") {
+            <?php if (isset($_SESSION['userRole']) && $_SESSION['userRole'] == "admin") {
                 echo '           
             <li>
                 <div class="text-center pt-3 mb-2 mt-3 pb-0 w-75 center-block">
@@ -203,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
                             <div class="row g-0">
                                 <div class="col-lg-6 d-flex border-right">
                                     <div class="card-body p-md-4 mx-md-4 card-detail-picture">
-                                        <img src="CSS/Images/Brands/amazon.png" class="img-responsive"
+                                        <img src="CSS/Images/Brands/null-card.png" class="img-responsive"
                                              alt="Brand Image">
                                     </div>
                                 </div>
