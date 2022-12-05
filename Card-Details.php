@@ -1,10 +1,15 @@
 <?php
 session_start();
+require_once("SourceCode/Func/Auth.php");
+AuthtoLogin();
+
 global $image;
 require ("SourceCode/Func/cardDetail.php");
 dbConnect();
 placeHolder();
 imageGetter();
+
+
 
 function addCart(): void {
     addCartFunc();
@@ -70,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
                 </div>
             </li>';
             } ?>
-            <?php if (isset($_SESSION['userRole']) && strtolower($_SESSION['userRole']) == "admin") {
+            <?php if (isset($_SESSION['userRole']) && $_SESSION['userRole'] == "admin") {
                 echo '           
             <li>
                 <div class="text-center pt-3 mb-2 mt-3 pb-0 w-75 center-block">
@@ -156,13 +161,18 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['clearCookie'])) {
                                 <div class="card w-90 page-title border-0 center-block ">
                                     <p class="detail-title pt-3 pb-3 border-bottom">Gift card detail</p>
                                 </div>
-                                <div class="card w-5 transparent-divider border-0 d-flex justify-content-center">
-                                    <a href= <?php echo 'Card-Update.php?id=' . $card['id']; ?>>
-                                        <button class="return-button bord">
-                                            <span class="glyphicon glyphicon-edit glyphicon-align-center"></span>
+                                <?php
+                                global $card;
+                                if (isset($_SESSION['userRole']) && $_SESSION['userRole'] == "admin") {
+                                    echo ' <div class="card w-5 transparent-divider border-0 d-flex justify-content-center">
+                                            <a href="Card-Update.php?id=' . $card['id'] . '"
+                                           <button class="return-button bord">
+                                           <span class="glyphicon glyphicon-edit glyphicon-align-center"></span>
                                         </button>
                                     </a>
-                                </div>
+                                </div>';
+                                }
+                                ?>
                             </div>
                             <div class="row g-0">
                                 <div class="col-lg-6 d-flex border-right">
