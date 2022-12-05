@@ -1,12 +1,12 @@
 
----- VERSION INFO ----
+#VERSION INFO
 PHP DEVELOPMENT VERSION: 8.0
 CLI = 8.1.0
 Bootstrap versions 3.7, 4.1
 ----------------------
 
 
----- DB INFO ----
+#DB INFO
 To create the database run the SQL files in this order:
 
 1. sqlUsers.sql
@@ -18,7 +18,7 @@ To create the database run the SQL files in this order:
 After that some database tables can be reset from the admin page which can be accessed when logged in as the admin user.
 ----------------------
 
----- LOGIN INFO ----
+#LOGIN INFO
 There are four default users with [username - password - role]
 1. admin - admin - admin
 2. msis@utah.edu - root - user
@@ -28,12 +28,12 @@ There are four default users with [username - password - role]
 Passwords are stored in hashes, so they can't simply be read or updated directly in the database.
 ----------------------
 
----MISC INFO ----
+#MISC INFO
 Card updates and editing can be accessed from the edit glyphicon on the cardlist and carddetail pages.
 ----------------------
 
 
----- REQUIREMENTS ----
+#REQUIREMENTS
 1. Log in to the system and show the list of gift cards (5 pt). Use password_verify to validate the password.
 ------Done, The cards can be accessed from the side menu
 
