@@ -1,5 +1,4 @@
 <?php
-session_start();
 function Authorization(): void
 {
     if (!isset($_SESSION['userName']) || $_SESSION['userName'] == "") {
